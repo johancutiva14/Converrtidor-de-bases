@@ -1,0 +1,56 @@
+tabla = "0123456789ABCDEF"
+def a_decimal(numero, base_origen):
+    if base_origen == 1:
+        return len(numero)
+    numero = numero.upper()
+    decimal = 0
+    exponente = 0
+    for i in range(len(numero)-1, -1, -1):
+        digito = tabla.index(numero[i])
+        if digito >= base_origen:
+            raise ValueError(f"Dígito '{numero[i]}' inválido para base {base_origen}")
+        decimal += digito * (base_origen ** exponente)
+        exponente += 1
+    return decimal
+
+def desde_decimal(decimal, base_destino):
+    if base_destino == 1:
+        return "1" * decimal
+    if decimal == 0:
+        return "0"
+    resultado = ""
+    while decimal > 0:
+        residuo = decimal % base_destino
+        resultado = tabla[residuo] + resultado
+        decimal //= base_destino
+    return resultado
+
+while True:
+    try:
+        numero = input("\nIngresa el número (o escribe 'salir' para terminar): ")
+        if numero.lower() == "salir":
+            print("Programa finalizado.")
+            break
+        base_origen = int(input("Ingresa la base origen (1 a 16): "))
+        base_destino = int(input("Ingresa la base destino (1 a 16): "))
+        decimal = a_decimal(numero, base_origen)
+        convertido = desde_decimal(decimal, base_destino)
+
+        binario = desde_decimal(decimal, 2)
+
+        try:
+            if decimal <= 255:
+                ascii_char = chr(decimal)
+            else:
+                ascii_char = "No válido"
+        except:
+            ascii_char = "No válido"
+
+        print("\n--- RESULTADOS ---")
+        print(f"{numero} en base {base_origen} = {convertido} en base {base_destino}")
+        print(f"{numero} en base {base_origen} = {binario} en binario")
+        print(f"ASCII: {ascii_char}")
+        print("------------------")
+
+    except ValueError as e:
+        print("Error:", e)
